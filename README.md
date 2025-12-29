@@ -12,6 +12,7 @@ The module system operates as a startable/stoppable runtime with a fully typed c
 
 **Note:** This is a prototype exploring these architectural patterns. The type system is *decent* and the patterns are interesting for building plugin-based architectures, but it's not battle-tested or production-ready. Inspired by ElysiaJS's composition mechanics.
 
+**NOTE:** This package is currently **not** available on any registry.
 ## Example
 
 Here's the basic pattern:
@@ -133,17 +134,6 @@ Extension methods are bound to `app.ext.*` and automatically merge when composin
 bun install
 bun run examples/example.ts
 ```
-
-## Status & potential improvements
-
-This is a prototype exploring these patterns. If I continue iterating, some directions that seem interesting:
-
-- **Build pipeline**: Proper npm distribution with `dist/` output, separate type declarations, tree-shakeable exports
-- **Error ergonomics**: Better error messages for provider collisions, including suggestion mechanisms and clearer stack traces
-- **Introspection**: Module graph visualization, dependency analysis, runtime debugging utilities
-- **Edge cases**: Circular dependency detection, hot module replacement support, async provider initialization
-
-The type system is fairly robust, but real-world usage would likely surface plenty of edge cases.
 
 ## License
 
