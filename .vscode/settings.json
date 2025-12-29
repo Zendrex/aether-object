@@ -1,0 +1,28 @@
+{
+	// Biome
+	"editor.formatOnSave": true,
+	"editor.formatOnPaste": true,
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
+	},
+
+	// Language Specific / Biome
+	"[javascript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+
+	// TypeScript
+	"typescript.tsdk": "node_modules/typescript/lib",
+
+	// Extension - Path Intellisense
+	"typescript.suggest.paths": false,
+	"javascript.suggest.paths": false
+}

@@ -1,0 +1,47 @@
+{
+	"name": "@zendrex/aether-object",
+	"version": "0.1.0",
+	"description": "ElysiaJS-inspired runtime module graph for TypeScript (plugins, typed context, lifecycle).",
+	"author": "zendrex",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"scripts": {
+		"check": "bunx --bun biome check",
+		"fix": "bunx --bun biome lint --write && bunx --bun biome format --write",
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.10",
+		"@types/bun": "latest",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7"
+	},
+	"peerDependencies": {
+		"typescript": "^5.9.3"
+	},
+	"lint-staged": {
+		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+			"bun run fix"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/zendrex/aether-object.git"
+	},
+	"bugs": {
+		"url": "https://github.com/zendrex/aether-object/issues"
+	},
+	"homepage": "https://github.com/zendrex/aether-object#readme",
+	"keywords": [
+		"typescript",
+		"plugin",
+		"composition",
+		"runtime",
+		"context",
+		"elysia",
+		"lifecycle"
+	]
+}
