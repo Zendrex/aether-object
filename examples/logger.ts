@@ -1,4 +1,4 @@
-import { Aether } from "@/index";
+import { Aether } from "../src/index.ts";
 
 export const logger = new Aether("logger")
 	.decorate("logLevel", "info")
@@ -13,7 +13,7 @@ export const logger = new Aether("logger")
 				}
 			},
 		}),
-		{ scope: "scoped" },
+		{ scope: "global" },
 	)
 	.onLoad(({ log }) => {
 		log.info("Logger initialized");

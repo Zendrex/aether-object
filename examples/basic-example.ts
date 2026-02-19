@@ -1,6 +1,6 @@
-import { Aether } from "@/index";
+import { Aether } from "../src/index.ts";
 
-import { logger } from "./logger";
+import { logger } from "./logger.ts";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -40,8 +40,7 @@ const commandPlugin = new Aether("commands")
 	});
 
 const app = new Aether("app")
-	.use(logger)
-	.use(commandPlugin) // Brings in .ext.command() extension method
+	.use(commandPlugin) // Brings in .ext.command() extension method and logger
 	.ext.registerCommand("ping", () => console.log("Pong!"))
 	.ext.registerCommand("status", () => console.log("All systems operational!"))
 	.decorate("port", 3000, { scope: "global" })
@@ -82,6 +81,6 @@ async function main() {
 	console.log(`App is running: ${app.isRunning}`);
 }
 
-if (require.main === module) {
+if (import.meta.main) {
 	main().catch(console.error);
 }
