@@ -5,7 +5,7 @@ A TypeScript library for building composable runtime module systems with plugin 
 **Core features:**
 - **Plugin composition** via `.use()` with scope control and transitive exports
 - **Typed context building** through `.decorate()` (computed/factory) and `.state()` (stateful)
-- **Lifecycle management** with `.onLoad()` / `.onUnload()` hooks and `start()/stop()` semantics
+- **Lifecycle management** with `.onLoad()` / `.onUnload()` hooks and `start()`/`stop()` semantics
 - **Extension API** via `.extend()` for adding chainable methods under `app.ext.*`
 
 The module system operates as a startable/stoppable runtime with a fully typed context that's only accessible when running. All composition is immutable, making module definitions reusable across different runtime contexts.
@@ -13,28 +13,27 @@ The module system operates as a startable/stoppable runtime with a fully typed c
 **Note:** This is a prototype exploring these architectural patterns. The type system is *decent* and the patterns are interesting for building plugin-based architectures, but it's not battle-tested or production-ready. Inspired by ElysiaJS's composition mechanics.
 
 **NOTE:** This package is currently **not** available on any registry.
-## Example
 
-Here's the basic pattern:
+## Example
 
 ```ts
 import { Aether } from "@zendrex/aether-object";
 
 const logger = new Aether("logger")
-	.decorate("logLevel", "info")
+	.decorate("logLevel", "info", { scope: "global" })
 	.decorate(
 		"log",
 		(ctx) => ({
-			info: (message: string) => console.log(`[${ctx.logLevel.toUpperCase()}] ${message}`),
-			error: (message: string) => console.error(`[ERROR] ${message}`),
+			info: (msg: string) => console.log(`[INFO] ${msg}`),
+			error: (msg: string) => console.error(`[ERROR] ${msg}`),
 		}),
-		{ scope: "scoped" },
+		{ scope: "global" },
 	)
 	.onLoad(({ log }) => log.info("Logger initialized"));
 
 const app = new Aether("app")
 	.use(logger)
-	.decorate("port", 3000, { scope: "global" })
+	.decorate("port", 3000)
 	.onLoad(({ log, port }) => log.info(`App starting on :${port}`))
 	.onUnload(({ log }) => log.info("App stopping"));
 
@@ -47,7 +46,7 @@ await app.stop();
 
 ### Immutable builder pattern
 
-All builder methods return new `Aether` instances rather than mutating. This keeps composition predictable and makes the module definitions reusable across different runtime contexts.
+All builder methods return new `Aether` instances rather than mutating. This keeps composition predictable and makes module definitions reusable across different runtime contexts.
 
 ### Provider system
 
@@ -57,25 +56,26 @@ The context is built from two provider types:
 
 ```ts
 app.decorate("port", 3000);
-app.decorate("server", (ctx) => ({ 
-  start: () => ctx.log.info("start") 
-}), { scope: "global" });
+app.decorate("server", (ctx) => ({
+	start: () => ctx.log.info("start"),
+}));
 ```
 
-**Store** (`.state()`) is for stateful primitives—Maps, caches, config objects, etc. These are typically static values:
+**Store** (`.state()`) is for stateful data — Maps, caches, config objects. Object-form values are stored as-is; key-value form detects factory functions:
 
 ```ts
 app.state("commands", new Map());
-app.state("config", { debug: true });
+app.state({ debug: true, retries: 3 });
 ```
 
 ### Scope system
 
-Providers use scopes to control visibility and propagation through the module tree:
+Providers use two scopes to control visibility through the module tree:
 
 - **`local`** (default) — visible only within the declaring module
-- **`scoped`** — exported to the direct parent, non-transitive
 - **`global`** — exported transitively up the entire ancestry chain
+
+Non-transitive export (visible to direct parent only) is controlled at the composition level via `use(plugin, { as: "scoped" })`.
 
 The `mode` option controls collision behavior:
 - **`append`** (default) — throws on key collisions
@@ -86,20 +86,21 @@ The `mode` option controls collision behavior:
 Compose modules using `.use()` with support for multiple patterns:
 
 ```ts
-app.use(pluginAether)                  // Aether instance
-app.use([plugin1, plugin2])            // array of plugins
-app.use((app) => app.decorate(...))    // plugin function
+app.use(pluginInstance);                // Aether instance
+app.use([plugin1, plugin2]);            // array of plugins
+app.use((app) => app.decorate(...));    // plugin function
+app.use(plugin, { as: "scoped" });      // non-transitive
 ```
 
-The `scope` option controls runtime instantiation—whether plugins share a definition instance or get scoped copies. The `as: "scoped"` option prevents transitive propagation, limiting exports to the direct parent only.
+Duplicate plugins (same definition reference) are automatically deduplicated.
 
 ### Lifecycle
 
 Lifecycle hooks execute in dependency order:
 - **`.onLoad()`** runs during `start()`, bottom-up through the module tree (dependencies first)
-- **`.onUnload()`** runs during `stop()`, in reverse topological order
+- **`.onUnload()`** runs during `stop()`, in reverse order (parent before dependencies)
 
-The `app.context` property is only accessible between `start()` and `stop()` calls—it throws otherwise.
+The `app.context` property is only accessible between `start()` and `stop()` calls — it throws otherwise.
 
 ### Extension API
 
@@ -115,12 +116,12 @@ const app = new Aether("app").use(plugin).ext.register("ping");
 
 Extension methods are bound to `app.ext.*` and automatically merge when composing plugins. Collisions throw.
 
-## API overview
+## API summary
 
 - `new Aether(name)` — create a module
 - `app.use(...)` — compose plugins
 - `app.decorate(...)` — add computed values/services
-- `app.state(...)` — add stateful things
+- `app.state(...)` — add stateful data
 - `app.provide(...)` — generic provider (needs explicit `{ kind, scope }`)
 - `app.extend(...)` — add methods to `app.ext.*`
 - `app.onLoad(cb)` / `app.onUnload(cb)` — lifecycle hooks
@@ -128,11 +129,11 @@ Extension methods are bound to `app.ext.*` and automatically merge when composin
 - `app.context` — typed context (only works while running)
 - `app.isRunning` — boolean
 
-## Running the example
+## Running the examples
 
 ```bash
 bun install
-bun run examples/example.ts
+bun examples/basic-example.ts
 ```
 
 ## License
