@@ -1,15 +1,20 @@
 import { Aether } from "../src/index.ts";
 
+/**
+ * Reusable logger plugin.
+ * Demonstrates: factory decorators, global scope, onLoad hooks.
+ */
 export const logger = new Aether("logger")
-	.decorate("logLevel", "info")
+	.decorate("logLevel", "info", { scope: "global" })
 	.decorate(
 		"log",
 		(ctx) => ({
-			info: (message: string) => console.log(`[${ctx.logLevel.toUpperCase()}] ${message}`),
-			error: (message: string) => console.error(`[ERROR] ${message}`),
-			debug: (message: string) => {
+			info: (msg: string) => console.log(`[INFO] ${msg}`),
+			warn: (msg: string) => console.warn(`[WARN] ${msg}`),
+			error: (msg: string) => console.error(`[ERROR] ${msg}`),
+			debug: (msg: string) => {
 				if (ctx.logLevel === "debug") {
-					console.log(`[DEBUG] ${message}`);
+					console.log(`[DEBUG] ${msg}`);
 				}
 			},
 		}),

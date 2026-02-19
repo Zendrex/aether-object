@@ -1,84 +1,77 @@
 import { Aether } from "../src/index.ts";
-
 import { logger } from "./logger.ts";
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// ---------------------------------------------------------------------------
+// Plugin: command registry
+// Demonstrates: use(), state, factory decorators, extensions
+// ---------------------------------------------------------------------------
 
 type CommandHandler = (args: string[]) => void | Promise<void>;
 
-const commandPlugin = new Aether("commands")
+const commands = new Aether("commands")
 	.use(logger)
 	.state("commands", new Map<string, CommandHandler>(), { scope: "global" })
 	.decorate(
-		"executeCommand",
+		"runCommand",
 		({ store, log }) =>
-			async (name: string, args: string[]) => {
+			async (name: string, ...args: string[]) => {
 				const handler = store.commands.get(name);
 				if (!handler) {
-					log.error(`[Commands] Unknown command: ${name}`);
+					log.error(`Unknown command: ${name}`);
 					return;
 				}
 				await handler(args);
 			},
 		{ scope: "global" },
 	)
-	.decorate(
-		"registerCommand",
-		({ store, log }) =>
-			async (name: string, handler: CommandHandler) => {
-				await wait(1000);
-				store.commands.set(name, handler);
-				log.info(`Registered command: ${name}`);
-			},
-		{ scope: "global" },
-	)
-	.extend("registerCommand", function (name: string, handler: CommandHandler) {
-		return this.onLoad(({ log, store }) => {
+	.extend("command", function (name: string, handler: CommandHandler) {
+		return this.onLoad(({ store, log }) => {
 			store.commands.set(name, handler);
 			log.info(`Registered command: ${name}`);
 		});
 	});
 
+// ---------------------------------------------------------------------------
+// App: composes plugins, adds server decorator, runs lifecycle
+// Demonstrates: chaining, object-form decorate, lifecycle hooks, extensions
+// ---------------------------------------------------------------------------
+
 const app = new Aether("app")
-	.use(commandPlugin) // Brings in .ext.command() extension method and logger
-	.ext.registerCommand("ping", () => console.log("Pong!"))
-	.ext.registerCommand("status", () => console.log("All systems operational!"))
-	.decorate("port", 3000, { scope: "global" })
-	.decorate(
-		"server",
-		(ctx) => ({
-			port: ctx.port,
-			start: () => {
-				ctx.log.info(`Server starting on port ${ctx.port}`);
-				return `http://localhost:${ctx.port}`;
-			},
-			stop: () => {
-				ctx.log.info("Server stopping");
-			},
-		}),
-		{ scope: "global" },
-	)
-	.onLoad((ctx) => {
-		ctx.log.info("Application loading...");
-		const url = ctx.server.start();
-		ctx.log.info(`Application ready at ${url}`);
+	.use(commands)
+	.ext.command("ping", () => console.log("Pong!"))
+	.ext.command("status", () => console.log("All systems operational"))
+	.decorate("port", 3000)
+	.decorate("server", (ctx) => ({
+		url: `http://localhost:${ctx.port}`,
+		start() {
+			ctx.log.info(`Listening on ${this.url}`);
+		},
+		stop() {
+			ctx.log.info("Server stopped");
+		},
+	}))
+	.onLoad(({ server, log }) => {
+		server.start();
+		log.info("Application ready");
 	})
-	.onUnload((ctx) => {
-		ctx.log.info("Application shutting down...");
-		ctx.server.stop();
+	.onUnload(({ server, log }) => {
+		log.info("Shutting down...");
+		server.stop();
 	});
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
 
 async function main() {
 	await app.start();
-	console.log(`App is running: ${app.isRunning}`);
+	console.log(`Running: ${app.isRunning}`);
 
-	await app.context.executeCommand("ping", []);
-	await app.context.executeCommand("status", []);
-
-	await new Promise((resolve) => setTimeout(resolve, 500));
+	await app.context.runCommand("ping");
+	await app.context.runCommand("status");
 
 	await app.stop();
-	console.log(`App is running: ${app.isRunning}`);
+	console.log(`Running: ${app.isRunning}`);
 }
 
 if (import.meta.main) {
