@@ -304,7 +304,7 @@ export class Aether<
 
 	/**
 	 * Register state/data accessible via `context.store.<key>`.
-	 * Unlike decorators, state values are stored as-is (no factory functions).
+	 * Object-form values are stored as-is; key-value form detects factory functions.
 	 */
 	state<K extends string, V>(
 		key: K,

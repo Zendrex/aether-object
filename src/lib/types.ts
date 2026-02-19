@@ -47,9 +47,6 @@ export type UseOptions = {
  */
 export type ProviderKind = "decorator" | "store";
 
-/** Runtime array of all provider kinds. */
-export const PROVIDER_KINDS: readonly ProviderKind[] = ["decorator", "store"] as const;
-
 // ---------------------------------------------------------------------------
 // Provider Scope Layers
 // ---------------------------------------------------------------------------

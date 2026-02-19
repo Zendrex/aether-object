@@ -21,6 +21,3 @@ export type MergeStrict<A, B> =
 	HasNoOverlap<A, B> extends true
 		? Prettify<A & B>
 		: TypeError<`Key collision: ${Extract<OverlapKeys<A, B>, string>} already exists. Use { as: 'override' } to replace.`>;
-
-/** Merges two types, with B overwriting any conflicting keys from A. */
-export type MergeLoose<A, B> = Prettify<Omit<A, keyof B> & B>;
