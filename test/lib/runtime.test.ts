@@ -1,6 +1,6 @@
-import { describe, it, expect } from "bun:test";
-import type { ModuleDefinition, ModuleRuntimeContext } from "../../src/lib/types";
+import { describe, expect, it } from "bun:test";
 import { buildTree, GLOBAL_SCOPE, initModule, lifecycleOrder, useScopeId } from "../../src/lib/runtime";
+import type { ModuleDefinition } from "../../src/lib/types";
 
 function makeDef(overrides?: Partial<ModuleDefinition>): ModuleDefinition {
 	return {

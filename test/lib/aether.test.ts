@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { Aether } from "../../src/index.ts";
 
 function createApp(name = "test") {
@@ -104,9 +104,7 @@ describe("Aether", () => {
 		});
 
 		it("works with explicit kind and scope", async () => {
-			const app = await createApp()
-				.provide("x", 1, { kind: "store", scope: "local" })
-				.start();
+			const app = await createApp().provide("x", 1, { kind: "store", scope: "local" }).start();
 			expect(app.context.store.x).toBe(1);
 		});
 	});
@@ -164,7 +162,8 @@ describe("Aether", () => {
 		it("deduplicates same plugin by definition reference", () => {
 			const plugin = new Aether("plugin").decorate("x", 1, { scope: "global" });
 			const app = createApp().use(plugin);
-			const app2 = app.use(plugin);
+			// biome-ignore lint/suspicious/noExplicitAny: runtime dedup prevents the type-level MergeStrict collision
+			const app2 = (app as any).use(plugin);
 			// Dedup returns same instance (no new Aether created)
 			expect(app2).toBe(app);
 		});
@@ -193,7 +192,8 @@ describe("Aether", () => {
 				})
 				.ext.greet("world");
 			const started = await app.start();
-			expect(started.context.greeting).toBe("hello world");
+			// biome-ignore lint/suspicious/noExplicitAny: extension chain loses type tracking for added decorators
+			expect((started.context as any).greeting).toBe("hello world");
 		});
 
 		it("adds multiple extensions via object form", () => {
@@ -331,18 +331,12 @@ describe("Aether", () => {
 
 	describe("override mode", () => {
 		it("allows overriding an existing decorator", async () => {
-			const app = await createApp()
-				.decorate("x", 1)
-				.decorate("x", 2, { mode: "override" })
-				.start();
+			const app = await createApp().decorate("x", 1).decorate("x", 2, { mode: "override" }).start();
 			expect(app.context.x).toBe(2);
 		});
 
 		it("allows overriding an existing state", async () => {
-			const app = await createApp()
-				.state("x", 1)
-				.state("x", 2, { mode: "override" })
-				.start();
+			const app = await createApp().state("x", 1).state("x", 2, { mode: "override" }).start();
 			expect(app.context.store.x).toBe(2);
 		});
 	});

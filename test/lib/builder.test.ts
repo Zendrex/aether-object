@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import { copyDef, emptyDef, isProvideOptions, parseArgs, pushEntry } from "../../src/lib/builder";
 
 describe("builder", () => {
@@ -80,7 +80,10 @@ describe("builder", () => {
 
 		it("parses (object) form for store", () => {
 			const result = parseArgs([{ a: 1, b: 2 }], "store");
-			expect(result.entries).toEqual([["a", 1], ["b", 2]]);
+			expect(result.entries).toEqual([
+				["a", 1],
+				["b", 2],
+			]);
 			expect(result.config.kind).toBe("store");
 			expect(result.isObjectForm).toBe(true);
 		});
@@ -113,9 +116,9 @@ describe("builder", () => {
 
 		it("throws on reserved key 'store' for store kind", () => {
 			const def = emptyDef();
-			expect(() =>
-				pushEntry([], def, "store", 1, { kind: "store", scope: "local", mode: "append" }, false),
-			).toThrow(/reserved key/);
+			expect(() => pushEntry([], def, "store", 1, { kind: "store", scope: "local", mode: "append" }, false)).toThrow(
+				/reserved key/,
+			);
 		});
 
 		it("throws on duplicate key in append mode", () => {
