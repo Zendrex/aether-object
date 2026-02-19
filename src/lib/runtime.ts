@@ -7,19 +7,11 @@ import type {
 	Scope,
 } from "./types";
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
 /** Global scope symbol shared by all plugins using default scope. */
 export const GLOBAL_SCOPE: symbol = Symbol.for("aether:use:global");
 
 /** Local copy of provider kinds to avoid importing a runtime value from types. */
 const KINDS: readonly ProviderKind[] = ["decorator", "store"] as const;
-
-// ---------------------------------------------------------------------------
-// Scope Resolution
-// ---------------------------------------------------------------------------
 
 /** Resolves a use() scope option to a scope ID for the module tree cache. */
 export function useScopeId(pluginName: string, scope?: Scope): string | symbol {
@@ -31,10 +23,6 @@ export function useScopeId(pluginName: string, scope?: Scope): string | symbol {
 	}
 	return scope;
 }
-
-// ---------------------------------------------------------------------------
-// Tree Building
-// ---------------------------------------------------------------------------
 
 /** Recursively builds the module runtime tree with WeakMap caching. */
 export function buildTree(
@@ -69,10 +57,6 @@ export function buildTree(
 	byScope.set(scopeId, ctx);
 	return ctx;
 }
-
-// ---------------------------------------------------------------------------
-// Module Initialization
-// ---------------------------------------------------------------------------
 
 /** Applies a single provider entry to the module's provider maps. */
 function applyEntry(
@@ -158,10 +142,6 @@ export function initModule(ctx: ModuleRuntimeContext): void {
 	ctx.callbackCtx = { ...providers.decorator, decorator: providers.decorator, store: providers.store };
 	ctx.initialized = true;
 }
-
-// ---------------------------------------------------------------------------
-// Lifecycle Ordering
-// ---------------------------------------------------------------------------
 
 /** Returns modules in post-order DFS (children before parent). */
 export function lifecycleOrder(root: ModuleRuntimeContext): ModuleRuntimeContext[] {

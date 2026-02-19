@@ -10,10 +10,6 @@ import type {
 } from "./types";
 import type { TypeError as AetherTypeError, MergeStrict, Prettify } from "./util-types";
 
-// ---------------------------------------------------------------------------
-// Reserved Key Guard
-// ---------------------------------------------------------------------------
-
 type ReservedKeys = { decorator: "decorator"; store: "store" };
 
 type RejectReservedKey<
@@ -22,10 +18,6 @@ type RejectReservedKey<
 > = ReservedKeys[K] extends keyof TAdd
 	? AetherTypeError<`Cannot use reserved key '${ReservedKeys[K]}' as ${K} name`>
 	: TAdd;
-
-// ---------------------------------------------------------------------------
-// Layer Update Helpers
-// ---------------------------------------------------------------------------
 
 type AddToProviders<TBase extends object, TAdd extends Record<string, unknown>> = Prettify<TBase & TAdd>;
 type OverrideProviders<TBase extends object, TAdd extends Record<string, unknown>> = Prettify<
@@ -44,10 +36,6 @@ type UpdateLayer<
 			: Prettify<AddToProviders<TLayer[K], RejectReservedKey<K, TAdd>>>
 		: TLayer[K];
 }>;
-
-// ---------------------------------------------------------------------------
-// ApplyProvide — 2-scope version (was 3-branch, now 2-branch)
-// ---------------------------------------------------------------------------
 
 export type ApplyProvide<
 	TName extends string,
@@ -81,10 +69,6 @@ export type ApplyDecorate<
 	TAdd extends Record<string, unknown>,
 	Extensions extends ExtensionBase = ExtensionBase,
 > = ApplyProvide<TName, Global, Local, TScope, TMode, "decorator", TAdd, Extensions>;
-
-// ---------------------------------------------------------------------------
-// use() Type Application
-// ---------------------------------------------------------------------------
 
 export type NormalizeUseAs<TOptions extends UseOptions | undefined> = TOptions extends { as: "scoped" }
 	? "scoped"

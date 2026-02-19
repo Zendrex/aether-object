@@ -1,0 +1,19 @@
+name: Setup CI
+
+inputs:
+  bun-version:
+    description: "Bun version"
+    required: false
+    default: latest
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Bun ${{ inputs.bun-version }}
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Install dependencies
+      shell: bash
+      run: bun install --frozen-lockfile

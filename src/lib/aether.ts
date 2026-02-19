@@ -19,10 +19,6 @@ import type {
 } from "./types";
 import type { EmptyObject } from "./util-types";
 
-// ============================================================================
-// Aether Class
-// ============================================================================
-
 /**
  * Immutable module builder with type-safe dependency injection and lifecycle management.
  * Each method returns a new instance, preserving functional composition patterns.
@@ -73,10 +69,6 @@ export class Aether<
 		return ext as BoundExtensions<this, Extensions>;
 	}
 
-	// ========================================================================
-	// Getters
-	// ========================================================================
-
 	/**
 	 * Whether the module has been started and is currently running.
 	 */
@@ -95,10 +87,6 @@ export class Aether<
 		return this.#runtimeTree.callbackCtx as CallbackContext<Global, Local>;
 	}
 
-	// ========================================================================
-	// Lifecycle Hooks
-	// ========================================================================
-
 	/**
 	 * Register a callback to run when the module starts. Receives full context with all providers.
 	 */
@@ -112,10 +100,6 @@ export class Aether<
 	onUnload(callback: LifecycleCallback<Global, Local>): Aether<TName, Global, Local, Extensions> {
 		return this.#next((d) => d.unloadCallbacks.push(callback as (ctx: unknown) => void | Promise<void>));
 	}
-
-	// ========================================================================
-	// Extensions
-	// ========================================================================
 
 	/**
 	 * Add a single extension method accessible via `ext.<name>(...)`.
@@ -157,10 +141,6 @@ export class Aether<
 
 		return new Aether(this.name, this.#def, next);
 	}
-
-	// ========================================================================
-	// Plugin Composition
-	// ========================================================================
 
 	/**
 	 * Compose with a plugin function that transforms the current instance.
@@ -236,10 +216,6 @@ export class Aether<
 
 		throw new Error("Invalid plugin type");
 	}
-
-	// ========================================================================
-	// Provider Registration
-	// ========================================================================
 
 	/**
 	 * Register a provider with explicit kind and scope options.
@@ -338,10 +314,6 @@ export class Aether<
 		return this.#addProviders(parseArgs(args, "store"));
 	}
 
-	// ========================================================================
-	// Lifecycle Management
-	// ========================================================================
-
 	/**
 	 * Initialize the module and all dependencies, then run onLoad callbacks.
 	 * Builds the dependency tree, resolves providers, and makes `context` accessible.
@@ -397,10 +369,6 @@ export class Aether<
 		}
 	}
 
-	// ========================================================================
-	// Private - Provider Management
-	// ========================================================================
-
 	#addProviders(parsed: {
 		entries: [string, unknown][];
 		config: { kind: ProviderKind; scope: LifeCycleType; mode: ContextAppendType };
@@ -412,10 +380,6 @@ export class Aether<
 			}
 		});
 	}
-
-	// ========================================================================
-	// Private - Helpers
-	// ========================================================================
 
 	#next(mutate: (d: ModuleDefinition) => void): Aether<TName, Global, Local, Extensions> {
 		const nextDef = copyDef(this.#def);

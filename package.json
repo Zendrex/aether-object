@@ -1,6 +1,6 @@
 {
 	"name": "@zendrex/aether-object",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "ElysiaJS-inspired runtime module graph for TypeScript (plugins, typed context, lifecycle).",
 	"author": "zendrex",
 	"license": "MIT",
@@ -25,7 +25,9 @@
 		"typescript": "^5.7.0"
 	},
 	"peerDependenciesMeta": {
-		"typescript": { "optional": true }
+		"typescript": {
+			"optional": true
+		}
 	},
 	"lint-staged": {
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [

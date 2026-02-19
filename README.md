@@ -1,4 +1,4 @@
-# aether-object
+# @zendrex/aether-object
 
 A TypeScript library for building composable runtime module systems with plugin composition, typed context management, and lifecycle control.
 
@@ -10,9 +10,9 @@ A TypeScript library for building composable runtime module systems with plugin 
 
 The module system operates as a startable/stoppable runtime with a fully typed context that's only accessible when running. All composition is immutable, making module definitions reusable across different runtime contexts.
 
-**Note:** This is a prototype exploring these architectural patterns. The type system is *decent* and the patterns are interesting for building plugin-based architectures, but it's not battle-tested or production-ready. Inspired by ElysiaJS's composition mechanics.
+This is a prototype exploring these architectural patterns. The type system is *decent* and the patterns are interesting for building plugin-based architectures, but it's not battle-tested or production-ready. Inspired by ElysiaJS's composition mechanics.
 
-**NOTE:** This package is currently **not** available on any registry.
+*This package is currently **not** available on any registry.*
 
 ## Example
 

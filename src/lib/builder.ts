@@ -7,19 +7,11 @@ import type {
 	ProviderKind,
 } from "./types";
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
 const RESERVED_KEYS: Record<ProviderKind, string> = { decorator: "decorator", store: "store" };
 
 const VALID_SCOPES = new Set<string>(["global", "local"]);
 const VALID_KINDS = new Set<string>(["decorator", "store"]);
 const VALID_MODES = new Set<string>(["append", "override"]);
-
-// ---------------------------------------------------------------------------
-// Internal Types
-// ---------------------------------------------------------------------------
 
 /** Resolved provider configuration after argument parsing. */
 export type ResolvedConfig = {
@@ -35,10 +27,6 @@ export type ParsedArgs = {
 	isObjectForm: boolean;
 };
 
-// ---------------------------------------------------------------------------
-// Module Definition Helpers
-// ---------------------------------------------------------------------------
-
 /** Creates an empty module definition. */
 export function emptyDef(): ModuleDefinition {
 	return { providers: [], loadCallbacks: [], unloadCallbacks: [], uses: [] };
@@ -53,10 +41,6 @@ export function copyDef(d: ModuleDefinition): ModuleDefinition {
 		uses: [...d.uses],
 	};
 }
-
-// ---------------------------------------------------------------------------
-// Options Detection
-// ---------------------------------------------------------------------------
 
 /**
  * Type guard that checks if an argument is a {@link ProvideOptions} object.
@@ -74,10 +58,6 @@ export function isProvideOptions(arg: unknown): arg is ProvideOptions {
 		(typeof o.mode === "string" && VALID_MODES.has(o.mode))
 	);
 }
-
-// ---------------------------------------------------------------------------
-// Argument Parsing
-// ---------------------------------------------------------------------------
 
 /** Parses provider registration arguments into a normalized form. */
 export function parseArgs(args: unknown[], defaultKind: "provide" | ProviderKind): ParsedArgs {
@@ -112,10 +92,6 @@ export function parseArgs(args: unknown[], defaultKind: "provide" | ProviderKind
 
 	throw new Error("Invalid arguments");
 }
-
-// ---------------------------------------------------------------------------
-// Provider Entry Creation
-// ---------------------------------------------------------------------------
 
 /**
  * Creates and pushes a provider entry onto a module definition.

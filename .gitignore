@@ -1,6 +1,65 @@
-# dependencies (bun install)
-node_modules
+# =====================
+# Dependencies
+# =====================
+node_modules/
 
-# output
-out
-dist
+# =====================
+# Build outputs
+# =====================
+build/
+dist/
+out/
+*.tsbuildinfo
+
+# =====================
+# Environment Variables
+# =====================
+.env
+.env*.local
+
+# =====================
+# System / OS files
+# =====================
+._*
+.DS_Store
+Thumbs.db
+
+# =====================
+# IDEs and Editors
+# =====================
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# =====================
+# AI / Agents
+# =====================
+.claude/
+.cursor/
+
+# =====================
+# Logs
+# =====================
+logs
+*.log
+
+# =====================
+# Turbo
+# =====================
+.turbo
+
+# =====================
+# Testing
+# =====================
+coverage
+.nyc_output
+
+# =====================
+# Miscellaneous
+# =====================
+*.tgz
+.cache
+tmp
+temp

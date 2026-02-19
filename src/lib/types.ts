@@ -1,10 +1,6 @@
 import type { Aether } from "./aether";
 import type { EmptyObject, Prettify } from "./util-types";
 
-// ---------------------------------------------------------------------------
-// Extension Types
-// ---------------------------------------------------------------------------
-
 /**
  * Base type for extension method signatures.
  */
@@ -18,10 +14,6 @@ export type ExtensionBase = Record<string, (...args: any[]) => any>;
 export type BoundExtensions<TSelf, TExt extends ExtensionBase> = {
 	[K in keyof TExt]: TExt[K] extends (...args: infer A) => unknown ? (...args: A) => TSelf : never;
 };
-
-// ---------------------------------------------------------------------------
-// Scope Types
-// ---------------------------------------------------------------------------
 
 /**
  * Defines visibility scope for module dependencies.
@@ -38,18 +30,10 @@ export type UseOptions = {
 	as?: "global" | "scoped";
 };
 
-// ---------------------------------------------------------------------------
-// Provider Kinds
-// ---------------------------------------------------------------------------
-
 /**
  * Type of provider: "decorator" for methods/utilities or "store" for state.
  */
 export type ProviderKind = "decorator" | "store";
-
-// ---------------------------------------------------------------------------
-// Provider Scope Layers
-// ---------------------------------------------------------------------------
 
 /**
  * Provider visibility: "global" (all ancestors) or "local" (current only).
@@ -84,10 +68,6 @@ export type LifecycleCallback<Global extends ProviderLayer, Local extends Provid
 	context: CallbackContext<Global, Local>,
 ) => void | Promise<void>;
 
-// ---------------------------------------------------------------------------
-// Provider Options
-// ---------------------------------------------------------------------------
-
 /**
  * Options for provider registration.
  */
@@ -96,10 +76,6 @@ export type ProvideOptions<K extends ProviderKind = ProviderKind> = {
 	scope?: LifeCycleType;
 	mode?: ContextAppendType;
 };
-
-// ---------------------------------------------------------------------------
-// Provider Composition Helpers
-// ---------------------------------------------------------------------------
 
 /**
  * Extracts all providers of a specific kind from all scope layers.
@@ -110,19 +86,11 @@ export type ProvidersOfKind<
 	K extends ProviderKind,
 > = Prettify<Global[K] & Local[K]>;
 
-// ---------------------------------------------------------------------------
-// use() typing
-// ---------------------------------------------------------------------------
-
 /**
  * Generic Aether type accepting any configuration (for plugin compatibility).
  */
 // biome-ignore lint/suspicious/noExplicitAny: AnyAether uses `any` for Extensions to allow variance
 export type AnyAether = Aether<string, ProviderLayer, ProviderLayer, any>;
-
-// ---------------------------------------------------------------------------
-// Module Definition (Runtime)
-// ---------------------------------------------------------------------------
 
 /**
  * Internal representation of a registered provider.
